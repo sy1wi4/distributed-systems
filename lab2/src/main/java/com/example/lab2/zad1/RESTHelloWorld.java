@@ -1,4 +1,4 @@
-package com.example.lab2;
+package com.example.lab2.zad1;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
