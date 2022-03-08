@@ -60,7 +60,7 @@ public class TodosResource {
     // Defines that the next path parameter after todos is
     // treated as a parameter and passed to the TodoResources
     // Allows to type http://localhost:8080/REST_Ex1/rest/todos/1
-    // 1 will be treaded as parameter todo and passed to TodoResource
+    // 1 will be treated as parameter todo and passed to TodoResource
     @Path("{todo}")
     public TodoResource getTodo(@PathParam("todo") String id) {
         return new TodoResource(uriInfo, request, id);
