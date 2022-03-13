@@ -6,11 +6,14 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 
 public class Client {
 
     public static void main(String[] args) {
+        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
         System.out.println("--------- CLIENT ---------");
         String hostName = "localhost";
         int portNumber = 12345;
@@ -26,7 +29,7 @@ public class Client {
             String id = stdin.nextLine();
             out.println(id);
 
-            new Thread(listen(in)).start();
+            executor.execute(listen(in));
 
             while (true) {
                 String message = stdin.nextLine();

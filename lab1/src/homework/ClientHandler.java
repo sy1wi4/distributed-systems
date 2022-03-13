@@ -40,7 +40,6 @@ public class ClientHandler implements Runnable {
                         client.out.println(String.format("%s:%s", id, message));
                     }
                 }
-
             }
         } catch (IOException e) {
             e.printStackTrace();

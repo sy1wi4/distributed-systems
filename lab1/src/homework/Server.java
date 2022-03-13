@@ -6,11 +6,14 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class Server {
     private static final List<ClientHandler> clients = Collections.synchronizedList(new ArrayList<>());
 
     public static void main(String[] args) {
+        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
 
         System.out.println("--------- SERVER ---------");
         int portNumber = 12345;
@@ -22,7 +25,7 @@ public class Server {
 
                 ClientHandler client = new ClientHandler(clientSocket, clients);
                 clients.add(client);
-                new Thread(client).start();
+                executor.execute(client);
             }
         } catch (IOException e) {
             e.printStackTrace();
