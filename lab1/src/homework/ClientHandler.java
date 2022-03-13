@@ -9,14 +9,14 @@ import java.util.List;
 
 // after new client connection request is processed here,
 // not in the same thread that accepts the client connection
-public class ServerClientThread implements Runnable {
-    private List<ServerClientThread> clients;
+public class ClientHandler implements Runnable {
+    private final List<ClientHandler> clients;
     Socket socket;
     PrintWriter out;
     BufferedReader in;
     String id;
 
-    public ServerClientThread(Socket clientSocket, List<ServerClientThread> clients) throws IOException {
+    public ClientHandler(Socket clientSocket, List<ClientHandler> clients) throws IOException {
         this.clients = clients;
         socket = clientSocket;
         out = new PrintWriter(socket.getOutputStream(), true);
@@ -25,25 +25,29 @@ public class ServerClientThread implements Runnable {
 
     @Override
     public void run() {
-        // send to all
+        // new server client -> read id, read messages, send to all
         try {
             id = in.readLine().trim();
             System.out.println("Client connected, id: " + id);
 
             while (true) {
                 String message = in.readLine().trim();
-                System.out.printf("New message from client [%s]: \"%s\"\n", id, message);
-                System.out.println("Sending to other clients...");
+                System.out.printf("Sending new message from [%s] to other clients...%n", id);
+
+                for (ClientHandler client : clients) {
+                    if (!client.getId().equals(id)) {
+                        System.out.printf("...sending to [%s]%n", client.getId());
+                        client.out.println(String.format("%s:%s", id, message));
+                    }
+                }
 
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // TODO: finally
-
     }
 
-    private void sendMessage(String message) {
-        out.println(message);
+    public String getId() {
+        return id;
     }
 }
