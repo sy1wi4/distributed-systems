@@ -49,7 +49,7 @@
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/lab2/target/lab2-1.0-SNAPSHOT/META-INF/MANIFEST.MF" />
       </element>
-      <element id="javaee-facet-resources" facet="lab2/web/Web" />
+      <element id="javaee-facet-resources" facet="labs/web/Web" />
     </root>
   </artifact>
 </component>

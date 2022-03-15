@@ -6,11 +6,18 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="rest-service" />
         <module name="lab2" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="lab2" target="1.8" />
+      <module name="rest-service" target="11" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="rest-service" options="-parameters" />
+    </option>
   </component>
 </project>
