@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p>Siema</p>
+<!--model attributes-->
+<h1>Form</h1>
+<!--th:action - direct POST to the form endpoint-->
+<!--th:object - declares the model object (via key new_form - created in Controller) to use for collecting the form data-->
+<!--the form submits to the /form endpoint by using a POST call-->
+<form action="#" th:action="@{/form}" th:object="${new_form}" method="post">
+    <label>Id: <input type="text" th:field="*{id}"/></label>
+    <p><input type="submit" value="Submit"/> <input type="reset" value="Reset"/></p>
+</form>
+</body>
+</html>
