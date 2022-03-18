@@ -1,6 +1,6 @@
 package com.example.restservice;
 
-// contains fields corresponding to the form fields in the "form" view
+// Contain fields corresponding to the form fields in the "form" view
 // (used to capture the information from the form)
 
 // TODO: change to Flight
