@@ -1,136 +1,50 @@
 package com.example.restservice.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+// Contain fields corresponding to the form fields in the "form" view
+// (used to capture the information from the form)
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
+
 public class Flight {
-    private String icao24;
-    private long firstSeen;
-    private String estDepartureAirport;
-    private long lastSeen;
-    private String estArrivalAirport;
-    private String callsign;
-    private int estDepartureAirportHorizDistance;
-    private int estDepartureAirportVertDistance;
-    private int estArrivalAirportHorizDistance;
-    private int estArrivalAirportVertDistance;
-    private int departureAirportCandidatesCount;
-    private int arrivalAirportCandidatesCount;
+    // The given time interval must not be larger than two hours!
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date startDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date endDate;
+    private String startTime;
+    private String endTime;
 
-    public Flight() {
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setIcao24(String icao24) {
-        this.icao24 = icao24;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 
-    public void setFirstSeen(long firstSeen) {
-        this.firstSeen = firstSeen;
+    public Date getEndDate() {
+        return endDate;
     }
 
-    public void setEstDepartureAirport(String estDepartureAirport) {
-        this.estDepartureAirport = estDepartureAirport;
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
-    public void setLastSeen(long lastSeen) {
-        this.lastSeen = lastSeen;
+    public String getStartTime() {
+        return startTime;
     }
 
-    public void setEstArrivalAirport(String estArrivalAirport) {
-        this.estArrivalAirport = estArrivalAirport;
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
     }
 
-    public void setCallsign(String callsign) {
-        this.callsign = callsign;
+    public String getEndTime() {
+        return endTime;
     }
 
-    public void setEstDepartureAirportHorizDistance(int estDepartureAirportHorizDistance) {
-        this.estDepartureAirportHorizDistance = estDepartureAirportHorizDistance;
-    }
-
-    public void setEstDepartureAirportVertDistance(int estDepartureAirportVertDistance) {
-        this.estDepartureAirportVertDistance = estDepartureAirportVertDistance;
-    }
-
-    public void setEstArrivalAirportHorizDistance(int estArrivalAirportHorizDistance) {
-        this.estArrivalAirportHorizDistance = estArrivalAirportHorizDistance;
-    }
-
-    public void setEstArrivalAirportVertDistance(int estArrivalAirportVertDistance) {
-        this.estArrivalAirportVertDistance = estArrivalAirportVertDistance;
-    }
-
-    public void setDepartureAirportCandidatesCount(int departureAirportCandidatesCount) {
-        this.departureAirportCandidatesCount = departureAirportCandidatesCount;
-    }
-
-    public void setArrivalAirportCandidatesCount(int arrivalAirportCandidatesCount) {
-        this.arrivalAirportCandidatesCount = arrivalAirportCandidatesCount;
-    }
-
-    public String getIcao24() {
-        return icao24;
-    }
-
-    public long getFirstSeen() {
-        return firstSeen;
-    }
-
-    public String getEstDepartureAirport() {
-        return estDepartureAirport;
-    }
-
-    public long getLastSeen() {
-        return lastSeen;
-    }
-
-    public String getEstArrivalAirport() {
-        return estArrivalAirport;
-    }
-
-    public String getCallsign() {
-        return callsign;
-    }
-
-    public int getEstDepartureAirportHorizDistance() {
-        return estDepartureAirportHorizDistance;
-    }
-
-    public int getEstDepartureAirportVertDistance() {
-        return estDepartureAirportVertDistance;
-    }
-
-    public int getEstArrivalAirportHorizDistance() {
-        return estArrivalAirportHorizDistance;
-    }
-
-    public int getEstArrivalAirportVertDistance() {
-        return estArrivalAirportVertDistance;
-    }
-
-    public int getDepartureAirportCandidatesCount() {
-        return departureAirportCandidatesCount;
-    }
-
-    public int getArrivalAirportCandidatesCount() {
-        return arrivalAirportCandidatesCount;
-    }
-
-    @Override
-    public String toString() {
-        return "Flight{" +
-                "icao24='" + icao24 + '\'' +
-                ", firstSeen=" + firstSeen +
-                ", estDepartureAirport='" + estDepartureAirport + '\'' +
-                ", lastSeen=" + lastSeen +
-                ", estArrivalAirport='" + estArrivalAirport + '\'' +
-                ", callsign='" + callsign + '\'' +
-                ", estDepartureAirportHorizDistance=" + estDepartureAirportHorizDistance +
-                ", estDepartureAirportVertDistance=" + estDepartureAirportVertDistance +
-                ", estArrivalAirportHorizDistance=" + estArrivalAirportHorizDistance +
-                ", estArrivalAirportVertDistance=" + estArrivalAirportVertDistance +
-                ", departureAirportCandidatesCount=" + departureAirportCandidatesCount +
-                ", arrivalAirportCandidatesCount=" + arrivalAirportCandidatesCount +
-                '}';
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 }

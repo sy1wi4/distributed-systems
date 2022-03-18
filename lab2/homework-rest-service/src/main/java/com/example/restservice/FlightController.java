@@ -1,5 +1,6 @@
 package com.example.restservice;
 
+import com.example.restservice.model.Flight;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.springframework.stereotype.Controller;
@@ -12,7 +13,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.Socket;
 import java.net.URL;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.util.Date;
 
 // One of the main differences is RestTemplate is synchronous and blocking i.e. when you do a rest call you need
 // to wait till the response comes back to proceed further.
@@ -23,25 +28,37 @@ import java.net.URL;
 // TODO: @RestController?
 @Controller
 // TODO: change name
-public class FormController {
+public class FlightController {
     @GetMapping("/open-sky-stats")
     // return the name of a view ("form" - responsible for rendering the html content)
     // Model is passed to "form" template
     public String form(Model model) {
-        model.addAttribute("new_form", new Form());
+        model.addAttribute("new_flight", new Flight());
         return "form";
     }
 
     // receives the Form object that was populated by the form
     @PostMapping("/open-sky-stats")
     // The Form is a @ModelAttribute, so it is bound to the incoming form content
-    public String greetingSubmit(@ModelAttribute Form newForm, Model model) throws IOException, JSONException {
-        model.addAttribute("new_form", newForm);
+    public String greetingSubmit(@ModelAttribute Flight newFlight, Model model) throws IOException, JSONException {
+        model.addAttribute("new_flight", newFlight);
+        long beginParam = getUnixTimestamp(newFlight.getStartDate(), newFlight.getStartTime());
+        long endParam = getUnixTimestamp(newFlight.getEndDate(), newFlight.getEndTime());
 
-        URL url = new URL("https://opensky-network.org/api/flights/all?begin=1517227200&end=1517230800");
+        URL url = new URL("https://opensky-network.org/api/flights/all?begin=" + beginParam + "&end=" + endParam);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        System.out.println("Query: " + "https://opensky-network.org/api/flights/all?begin=" + beginParam + "&end=" + endParam);
+
+        System.out.println("Start: " + newFlight.getStartDate() + " " + newFlight.getStartTime());
+        System.out.println("End: " + newFlight.getEndDate() + " " + newFlight.getEndTime());
+
+        System.out.println("UNIX start time: " + getUnixTimestamp(newFlight.getStartDate(), newFlight.getStartTime()));
+        System.out.println("UNIX end time: " + getUnixTimestamp(newFlight.getEndDate(), newFlight.getEndTime()));
+
         model.addAttribute("status", connection.getResponseCode());
         JSONArray response = getJsonResponse(connection);
+        generateStats(response, model);
         return "result";
     }
 
@@ -54,5 +71,14 @@ public class FormController {
         }
         in.close();
         return new JSONArray(buffer.toString());
+    }
+
+    private long getUnixTimestamp(Date date, String time){
+        return date.getTime() /1000L + Duration.between(LocalTime.MIN , LocalTime.parse(time)).toSeconds();
+    }
+
+    private void generateStats(JSONArray flights, Model model){
+
+        model.addAttribute("flights_number", flights.length());
     }
 }
