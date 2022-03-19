@@ -5,9 +5,13 @@
     <title>Open Sky stats</title>
 </head>
 <body>
-<p>No flights were found for the given time period, try again...</p>
 <p th:text="'Start: ' + ${#dates.format(time_interval.startDate, 'dd/MM/yyyy')} + ' ' + ${time_interval.startTime}"></p>
 <p th:text="'End: ' + ${#dates.format(time_interval.endDate, 'dd/MM/yyyy')} + ' ' + ${time_interval.endTime}"></p>
+<h3>Flights stats</h3>
+<p th:text="'Flights number: ' + ${flights_number}"></p>
+<p th:text="'Min flight duration: ' + ${min_flight_duration}"></p>
+<p th:text="'Max flight duration: ' + ${max_flight_duration}"></p>
+<p th:text="'Avg flight duration: ' + ${avg_flight_duration}"></p>
 
 <a th:href="@{/open-sky-stats}">
     <button>Return</button>

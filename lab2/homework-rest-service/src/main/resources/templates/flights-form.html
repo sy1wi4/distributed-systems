@@ -10,20 +10,19 @@
     }
 </style>
 <body>
-<h1>Open Sky stats ʕ •ᴥ•ʔ</h1>
-<!--th:action - direct POST to the form endpoint-->
-<!--th:object - declares the model object (via key time_interval - created in Controller) to use for collecting the form data-->
-<!--the form submits to the /form endpoint by using a POST call-->
-<form action="#" method="post" th:action="@{/open-sky-stats}" th:object="${time_interval}">
+<h1>Flights in time interval ʕ •ᴥ•ʔ</h1>
+<form action="#" method="post" th:action="@{/open-sky-stats/flights-form}" th:object="${time_interval}">
+    <h3>Choose time interval</h3>
+    <p> Must not be larger than two hours!</p>
     <div>
-        <br><label for="flight-start-date">Choose flight start date:</label><br>
+        <label for="flight-start-date">From: </label>
         <input id="flight-start-date" th:field="${time_interval.startDate}" type="date"/>
         <label>
             <input th:field="${time_interval.startTime}" type="time"/>
         </label>
     </div>
     <div>
-        <br><label for="flight-end-date">Choose flight end date:</label><br>
+        <br><label for="flight-end-date">To:</label>
         <input id="flight-end-date" th:field="${time_interval.endDate}" type="date"/>
         <label>
             <input th:field="${time_interval.endTime}" type="time"/>

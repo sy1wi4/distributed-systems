@@ -1,16 +1,13 @@
 package com.example.restservice.model;
 
-// Contain fields corresponding to the form fields in the "form" view
-// (used to capture the information from the form)
-
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-public class TimeInterval {
-    // The given time interval must not be larger than two hours!
+public class ArrivalsByAirport {
+    // The given time interval must not be larger than seven days!
 
     @NotNull(message = "You must choose start date")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -25,6 +22,9 @@ public class TimeInterval {
 
     @NotEmpty(message = "You must choose end time")
     private String endTime;
+
+    @NotEmpty(message = "You must choose airport")
+    private String airport;
 
     public Date getStartDate() {
         return startDate;
@@ -56,5 +56,13 @@ public class TimeInterval {
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+    }
+
+    public String getAirport() {
+        return airport;
+    }
+
+    public void setAirport(String airport) {
+        this.airport = airport;
     }
 }
