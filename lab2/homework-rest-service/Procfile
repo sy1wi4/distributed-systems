@@ -1,2 +1,2 @@
-web: java -cp target/classes/:target/dependency/* com.example.restservice.RestServiceApplication
+web: java -jar target/homework-rest-service-0.0.1-SNAPSHOT.jar
 
