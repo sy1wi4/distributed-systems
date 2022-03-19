@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Open Sky stats</title>
@@ -12,26 +12,26 @@
 <body>
 <h1>Open Sky stats ʕ •ᴥ•ʔ</h1>
 <!--th:action - direct POST to the form endpoint-->
-<!--th:object - declares the model object (via key new_flight - created in Controller) to use for collecting the form data-->
+<!--th:object - declares the model object (via key time_interval - created in Controller) to use for collecting the form data-->
 <!--the form submits to the /form endpoint by using a POST call-->
-<form action="#" th:action="@{/open-sky-stats}" th:object="${new_flight}" method="post">
+<form action="#" method="post" th:action="@{/open-sky-stats}" th:object="${time_interval}">
     <div>
         <br><label for="flight-start-date">Choose flight start date:</label><br>
-        <input type="date" th:field="${new_flight.startDate}" id="flight-start-date"/>
+        <input id="flight-start-date" th:field="${time_interval.startDate}" type="date"/>
         <label>
-            <input type="time" th:field="${new_flight.startTime}"/>
+            <input th:field="${time_interval.startTime}" type="time"/>
         </label>
     </div>
     <div>
         <br><label for="flight-end-date">Choose flight end date:</label><br>
-        <input type="date" th:field="${new_flight.endDate}" id="flight-end-date"/>
+        <input id="flight-end-date" th:field="${time_interval.endDate}" type="date"/>
         <label>
-            <input type="time" th:field="${new_flight.endTime}"/>
+            <input th:field="${time_interval.endTime}" type="time"/>
         </label>
     </div>
     <p><input type="submit" value="Submit"/> <input type="reset" value="Reset"/></p>
     <div th:if="${#fields.hasAnyErrors()}">
-        <p th:each="err : ${#fields.allErrors()}" th:text="${err}" th:class="error"></p>
+        <p th:class="error" th:each="err : ${#fields.allErrors()}" th:text="${err}"></p>
     </div>
 </form>
 </body>

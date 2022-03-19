@@ -6,7 +6,7 @@
 </head>
 <body>
 <p>Start after end time or more than two hours of data requested</p>
-<p th:text="'Start: ' + ${#dates.format(new_flight.startDate, 'dd/MM/yyyy')} + ' ' + ${new_flight.startTime}"></p>
-<p th:text="'End: ' + ${#dates.format(new_flight.endDate, 'dd/MM/yyyy')} + ' ' + ${new_flight.endTime}"></p>
+<p th:text="'Start: ' + ${#dates.format(time_interval.startDate, 'dd/MM/yyyy')} + ' ' + ${time_interval.startTime}"></p>
+<p th:text="'End: ' + ${#dates.format(time_interval.endDate, 'dd/MM/yyyy')} + ' ' + ${time_interval.endTime}"></p>
 </body>
 </html>

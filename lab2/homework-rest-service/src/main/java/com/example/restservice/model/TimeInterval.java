@@ -9,7 +9,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-public class Flight {
+public class TimeInterval {
     // The given time interval must not be larger than two hours!
 
     @NotNull(message = "You must choose start date")

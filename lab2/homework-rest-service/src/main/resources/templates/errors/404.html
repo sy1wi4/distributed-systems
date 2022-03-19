@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Open Sky stats</title>
 </head>
 <body>
 <p>No flights were found for the given time period, try again...</p>
-<p th:text="'Start: ' + ${#dates.format(new_flight.startDate, 'dd/MM/yyyy')} + ' ' + ${new_flight.startTime}"></p>
-<p th:text="'End: ' + ${#dates.format(new_flight.endDate, 'dd/MM/yyyy')} + ' ' + ${new_flight.endTime}"></p>
+<p th:text="'Start: ' + ${#dates.format(time_interval.startDate, 'dd/MM/yyyy')} + ' ' + ${time_interval.startTime}"></p>
+<p th:text="'End: ' + ${#dates.format(time_interval.endDate, 'dd/MM/yyyy')} + ' ' + ${time_interval.endTime}"></p>
 
 </body>
 </html>

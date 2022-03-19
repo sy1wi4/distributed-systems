@@ -1,17 +1,19 @@
 <!--TODO: maybe form and result in one view-->
 <!--TODO: return to the form-->
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Open Sky stats</title>
 </head>
 <body>
-<p th:text="'Status code: ' + ${status}"></p>
-<p th:text="'Start: ' + ${#dates.format(new_flight.startDate, 'dd/MM/yyyy')} + ' ' + ${new_flight.startTime}"></p>
-<p th:text="'End: ' + ${#dates.format(new_flight.endDate, 'dd/MM/yyyy')} + ' ' + ${new_flight.endTime}"></p>
+<p th:text="'Start: ' + ${#dates.format(time_interval.startDate, 'dd/MM/yyyy')} + ' ' + ${time_interval.startTime}"></p>
+<p th:text="'End: ' + ${#dates.format(time_interval.endDate, 'dd/MM/yyyy')} + ' ' + ${time_interval.endTime}"></p>
 <h3>Flights stats</h3>
 <p th:text="'Flights number: ' + ${flights_number}"></p>
+<p th:text="'Min flight duration: ' + ${min_flight_duration}"></p>
+<p th:text="'Max flight duration: ' + ${max_flight_duration}"></p>
+<p th:text="'Avg flight duration: ' + ${avg_flight_duration}"></p>
 
 </body>
 </html>

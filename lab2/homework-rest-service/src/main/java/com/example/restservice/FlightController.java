@@ -1,6 +1,6 @@
 package com.example.restservice;
 
-import com.example.restservice.model.Flight;
+import com.example.restservice.model.TimeInterval;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.springframework.stereotype.Controller;
@@ -26,29 +26,27 @@ import java.util.Date;
 // Instead, he will be notified when there is a response.
 
 // HTTP requests are handled by a controller
-// TODO: @RestController?
 @Controller
-// TODO: change name
 public class FlightController {
     @GetMapping("/open-sky-stats")
     // return the name of a view ("form" - responsible for rendering the html content)
     // Model is passed to "form" template
     public String form(Model model) {
-        model.addAttribute("new_flight", new Flight());
+        model.addAttribute("time_interval", new TimeInterval());
         return "form";
     }
 
-    // receives the Flight object that was populated by the form
+    // receives the TimeInterval object that was populated by the form
     @PostMapping("/open-sky-stats")
-    // The Flight is a @ModelAttribute, so it is bound to the incoming form content
-    public String submitForm(@Valid @ModelAttribute("new_flight") Flight newFlight, BindingResult bindingResult, Model model) throws IOException, JSONException {
-        model.addAttribute("new_flight", newFlight);
+    // The TimeInterval is a @ModelAttribute, so it is bound to the incoming form content
+    public String submitForm(@Valid @ModelAttribute("time_interval") TimeInterval timeInterval, BindingResult bindingResult, Model model) throws IOException, JSONException {
+        model.addAttribute("time_interval", timeInterval);
 
         if (bindingResult.hasErrors()) {
             return "form";
         }
-        long beginParam = getUnixTimestamp(newFlight.getStartDate(), newFlight.getStartTime());
-        long endParam = getUnixTimestamp(newFlight.getEndDate(), newFlight.getEndTime());
+        long beginParam = getUnixTimestamp(timeInterval.getStartDate(), timeInterval.getStartTime());
+        long endParam = getUnixTimestamp(timeInterval.getEndDate(), timeInterval.getEndTime());
 
         URL url = new URL("https://opensky-network.org/api/flights/all?begin=" + beginParam + "&end=" + endParam);
 //        URL url = new URL("https://opensky-network.org/api/flights/all?begin=1647663480&end=1647663600");  // empty example
@@ -56,13 +54,11 @@ public class FlightController {
 
         System.out.println("Query: " + "https://opensky-network.org/api/flights/all?begin=" + beginParam + "&end=" + endParam);
 
-        System.out.println("Start: " + newFlight.getStartDate() + " " + newFlight.getStartTime());
-        System.out.println("End: " + newFlight.getEndDate() + " " + newFlight.getEndTime());
+        System.out.println("Start: " + timeInterval.getStartDate() + " " + timeInterval.getStartTime());
+        System.out.println("End: " + timeInterval.getEndDate() + " " + timeInterval.getEndTime());
 
-        System.out.println("UNIX start time: " + getUnixTimestamp(newFlight.getStartDate(), newFlight.getStartTime()));
-        System.out.println("UNIX end time: " + getUnixTimestamp(newFlight.getEndDate(), newFlight.getEndTime()));
-
-        model.addAttribute("status", connection.getResponseCode());
+        System.out.println("UNIX start time: " + getUnixTimestamp(timeInterval.getStartDate(), timeInterval.getStartTime()));
+        System.out.println("UNIX end time: " + getUnixTimestamp(timeInterval.getEndDate(), timeInterval.getEndTime()));
 
         if (connection.getResponseCode() == 404) {
             return "errors/404";
@@ -86,6 +82,27 @@ public class FlightController {
         }
     }
 
+
+    private void generateStats(JSONArray flights, Model model) throws JSONException {
+        int minFlightDuration = Integer.MAX_VALUE;
+        int maxFlightDuration = Integer.MIN_VALUE;
+        int flightDurationSum = 0;
+
+        model.addAttribute("flights_number", flights.length());
+        for (int i = 0; i < flights.length(); i++) {
+            int flightDuration = flights.getJSONObject(i).getInt("lastSeen") - flights.getJSONObject(i).getInt("firstSeen");
+            minFlightDuration = Math.min(minFlightDuration, flightDuration);
+            maxFlightDuration = Math.max(maxFlightDuration, flightDuration);
+            flightDurationSum += flightDuration;
+        }
+        model.addAttribute("min_flight_duration", convertUnixToHumanReadable(minFlightDuration));
+        model.addAttribute("max_flight_duration", convertUnixToHumanReadable(maxFlightDuration));
+        model.addAttribute("avg_flight_duration", convertUnixToHumanReadable(flightDurationSum / flights.length()));
+        System.out.println("min: " + minFlightDuration + " max: " + maxFlightDuration + "avg: " + flightDurationSum / flights.length());
+
+        // another endpoint: Arrivals/Departures by Airport
+    }
+
     private JSONArray getJsonResponse(HttpURLConnection connection) throws IOException, JSONException {
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         StringBuilder buffer = new StringBuilder();
@@ -101,13 +118,7 @@ public class FlightController {
         return date.getTime() / 1000L + Duration.between(LocalTime.MIN, LocalTime.parse(time)).toSeconds();
     }
 
-    private void generateStats(JSONArray flights, Model model) {
-
-        model.addAttribute("flights_number", flights.length());
-        // avg/min/max flight duration (last seen - first seen)
-        // distance to the departure airport (?)
-
-
-        // another endpoint: Arrivals/Departures by Airport
+    private String convertUnixToHumanReadable(int seconds) {
+        return String.format("%02d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, (seconds % 60));
     }
 }
