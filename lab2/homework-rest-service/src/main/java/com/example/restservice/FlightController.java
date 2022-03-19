@@ -5,15 +5,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.validation.Valid;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.Socket;
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -37,15 +38,20 @@ public class FlightController {
         return "form";
     }
 
-    // receives the Form object that was populated by the form
+    // receives the Flight object that was populated by the form
     @PostMapping("/open-sky-stats")
-    // The Form is a @ModelAttribute, so it is bound to the incoming form content
-    public String greetingSubmit(@ModelAttribute Flight newFlight, Model model) throws IOException, JSONException {
+    // The Flight is a @ModelAttribute, so it is bound to the incoming form content
+    public String submitForm(@Valid @ModelAttribute("new_flight") Flight newFlight, BindingResult bindingResult, Model model) throws IOException, JSONException {
         model.addAttribute("new_flight", newFlight);
+
+        if (bindingResult.hasErrors()) {
+            return "form";
+        }
         long beginParam = getUnixTimestamp(newFlight.getStartDate(), newFlight.getStartTime());
         long endParam = getUnixTimestamp(newFlight.getEndDate(), newFlight.getEndTime());
 
         URL url = new URL("https://opensky-network.org/api/flights/all?begin=" + beginParam + "&end=" + endParam);
+//        URL url = new URL("https://opensky-network.org/api/flights/all?begin=1647663480&end=1647663600");  // empty example
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         System.out.println("Query: " + "https://opensky-network.org/api/flights/all?begin=" + beginParam + "&end=" + endParam);
@@ -57,9 +63,27 @@ public class FlightController {
         System.out.println("UNIX end time: " + getUnixTimestamp(newFlight.getEndDate(), newFlight.getEndTime()));
 
         model.addAttribute("status", connection.getResponseCode());
-        JSONArray response = getJsonResponse(connection);
-        generateStats(response, model);
-        return "result";
+
+        if (connection.getResponseCode() == 404) {
+            return "errors/404";
+        }
+
+        switch (connection.getResponseCode()) {
+            case HttpURLConnection.HTTP_OK:
+                JSONArray response = getJsonResponse(connection);
+                generateStats(response, model);
+                return "result";
+
+            case HttpURLConnection.HTTP_NOT_FOUND:
+                return "errors/404";
+
+            case HttpURLConnection.HTTP_BAD_REQUEST:
+                model.addAttribute("error_body", connection.getErrorStream().toString());
+                return "errors/400";
+
+            default:
+                return "error";
+        }
     }
 
     private JSONArray getJsonResponse(HttpURLConnection connection) throws IOException, JSONException {
@@ -73,12 +97,17 @@ public class FlightController {
         return new JSONArray(buffer.toString());
     }
 
-    private long getUnixTimestamp(Date date, String time){
-        return date.getTime() /1000L + Duration.between(LocalTime.MIN , LocalTime.parse(time)).toSeconds();
+    private long getUnixTimestamp(Date date, String time) {
+        return date.getTime() / 1000L + Duration.between(LocalTime.MIN, LocalTime.parse(time)).toSeconds();
     }
 
-    private void generateStats(JSONArray flights, Model model){
+    private void generateStats(JSONArray flights, Model model) {
 
         model.addAttribute("flights_number", flights.length());
+        // avg/min/max flight duration (last seen - first seen)
+        // distance to the departure airport (?)
+
+
+        // another endpoint: Arrivals/Departures by Airport
     }
 }

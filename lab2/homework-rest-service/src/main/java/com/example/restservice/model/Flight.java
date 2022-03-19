@@ -5,15 +5,25 @@ package com.example.restservice.model;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class Flight {
     // The given time interval must not be larger than two hours!
+
+    @NotNull(message = "You must choose start date")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
+
+    @NotNull(message = "You must choose end date")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
+
+    @NotEmpty(message = "You must choose start time")
     private String startTime;
+
+    @NotEmpty(message = "You must choose end time")
     private String endTime;
 
     public Date getStartDate() {

@@ -1,5 +1,3 @@
-<!--TODO: maybe form and result in one view-->
-<!--TODO: return to the form-->
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org" lang="en">
 <head>
@@ -7,11 +5,9 @@
     <title>Open Sky stats</title>
 </head>
 <body>
-<p th:text="'Status code: ' + ${status}"></p>
+<p>No flights were found for the given time period, try again...</p>
 <p th:text="'Start: ' + ${#dates.format(new_flight.startDate, 'dd/MM/yyyy')} + ' ' + ${new_flight.startTime}"></p>
 <p th:text="'End: ' + ${#dates.format(new_flight.endDate, 'dd/MM/yyyy')} + ' ' + ${new_flight.endTime}"></p>
-<h3>Flights stats</h3>
-<p th:text="'Flights number: ' + ${flights_number}"></p>
 
 </body>
 </html>

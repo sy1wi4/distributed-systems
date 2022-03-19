@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <title>Open Sky stats</title>
 </head>
+<style>
+    .error {
+        color: #c83838;
+    }
+</style>
 <body>
 <h1>Open Sky stats ʕ •ᴥ•ʔ</h1>
 <!--th:action - direct POST to the form endpoint-->
@@ -11,20 +16,23 @@
 <!--the form submits to the /form endpoint by using a POST call-->
 <form action="#" th:action="@{/open-sky-stats}" th:object="${new_flight}" method="post">
     <div>
-        <br><label for="flight-start-date">Choose start date and time:</label><br>
+        <br><label for="flight-start-date">Choose flight start date:</label><br>
         <input type="date" th:field="${new_flight.startDate}" id="flight-start-date"/>
         <label>
             <input type="time" th:field="${new_flight.startTime}"/>
         </label>
     </div>
     <div>
-        <br><label for="flight-end-date">Choose end date and time:</label><br>
+        <br><label for="flight-end-date">Choose flight end date:</label><br>
         <input type="date" th:field="${new_flight.endDate}" id="flight-end-date"/>
         <label>
             <input type="time" th:field="${new_flight.endTime}"/>
         </label>
     </div>
     <p><input type="submit" value="Submit"/> <input type="reset" value="Reset"/></p>
+    <div th:if="${#fields.hasAnyErrors()}">
+        <p th:each="err : ${#fields.allErrors()}" th:text="${err}" th:class="error"></p>
+    </div>
 </form>
 </body>
 </html>

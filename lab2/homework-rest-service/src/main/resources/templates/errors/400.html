@@ -1,17 +1,12 @@
-<!--TODO: maybe form and result in one view-->
-<!--TODO: return to the form-->
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org" lang="en">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Open Sky stats</title>
 </head>
 <body>
-<p th:text="'Status code: ' + ${status}"></p>
+<p>Start after end time or more than two hours of data requested</p>
 <p th:text="'Start: ' + ${#dates.format(new_flight.startDate, 'dd/MM/yyyy')} + ' ' + ${new_flight.startTime}"></p>
 <p th:text="'End: ' + ${#dates.format(new_flight.endDate, 'dd/MM/yyyy')} + ' ' + ${new_flight.endTime}"></p>
-<h3>Flights stats</h3>
-<p th:text="'Flights number: ' + ${flights_number}"></p>
-
 </body>
 </html>
