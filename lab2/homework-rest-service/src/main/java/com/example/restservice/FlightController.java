@@ -36,7 +36,6 @@ public class FlightController {
         return "flights-form";
     }
 
-
     @PostMapping("/open-sky-stats/flights-form")
     public String submitFlightsForm(@Valid @ModelAttribute("time_interval") FlightsInTimeInterval timeInterval, BindingResult bindingResult, Model model) throws IOException, JSONException {
         model.addAttribute("time_interval", timeInterval);
@@ -59,7 +58,6 @@ public class FlightController {
         return "arrivals-form";
     }
 
-
     @PostMapping("/open-sky-stats/arrivals-form")
     public String submitArrivalsForm(@Valid @ModelAttribute("arrival") ArrivalsByAirport arrival, BindingResult bindingResult, Model model) throws IOException, JSONException {
         model.addAttribute("arrival", arrival);
@@ -71,8 +69,7 @@ public class FlightController {
         long endParam = getUnixTimestamp(arrival.getEndDate(), arrival.getEndTime());
         String airportParam = arrival.getAirport();
 
-//        URL url = new URL("https://opensky-network.org/api/flights/arrival?airport=" + airportParam + "&begin=" + beginParam + "&end=" + endParam);
-        URL url = new URL("https://opensky-network.org/api/flights/arrival?airport=EDDF&begin=1647013140&end=1647020340");
+        URL url = new URL("https://opensky-network.org/api/flights/arrival?airport=" + airportParam + "&begin=" + beginParam + "&end=" + endParam);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         return processResponse(connection, model, "arrivals-result");
@@ -100,7 +97,6 @@ public class FlightController {
                 return "error";
         }
     }
-
 
     private void generateStats(JSONArray flights, Model model) throws JSONException {
         int minFlightDuration = Integer.MAX_VALUE;
