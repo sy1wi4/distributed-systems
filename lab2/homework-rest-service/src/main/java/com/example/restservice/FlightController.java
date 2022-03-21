@@ -77,7 +77,6 @@ public class FlightController {
 
     private String processResponse(HttpURLConnection connection, Model model, String resultHtml) throws IOException, JSONException {
         System.out.println(connection.getURL());
-
         switch (connection.getResponseCode()) {
             case HttpURLConnection.HTTP_OK:
                 JSONArray response = getJsonResponse(connection);

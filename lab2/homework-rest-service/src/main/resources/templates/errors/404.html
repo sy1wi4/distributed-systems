@@ -6,8 +6,6 @@
 </head>
 <body>
 <p>No flights were found for the given time period, try again...</p>
-<p th:text="'Start: ' + ${#dates.format(time_interval.startDate, 'dd/MM/yyyy')} + ' ' + ${time_interval.startTime}"></p>
-<p th:text="'End: ' + ${#dates.format(time_interval.endDate, 'dd/MM/yyyy')} + ' ' + ${time_interval.endTime}"></p>
 
 <a th:href="@{/open-sky-stats}">
     <button>Return</button>
