@@ -1,7 +1,4 @@
-import com.rabbitmq.client.BuiltinExchangeType;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,17 +12,30 @@ public class Crew {
         System.out.println("Enter crew name: ");
         String crewName = br.readLine();
 
-        System.out.printf("[%s] crew here%n", crewName);
-
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        String EXCHANGE_NAME = "exchange_exp";
-        channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
+        String EXCHANGE_EXP = "exchange_exp";
+        channel.exchangeDeclare(EXCHANGE_EXP, BuiltinExchangeType.DIRECT);
 
-        // TODO: confirmation exchange
+        String EXCHANGE_CONF = "exchange_conf";
+        channel.exchangeDeclare(EXCHANGE_CONF, BuiltinExchangeType.DIRECT);
+
+        String confQueue = channel.queueDeclare(crewName, false, false, false, null).getQueue();
+        channel.queueBind(confQueue, EXCHANGE_CONF, crewName);
+        System.out.println("created confirmation queue: " + crewName);
+
+        Consumer consumer = new DefaultConsumer(channel) {
+            @Override
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                String message = new String(body, StandardCharsets.UTF_8);
+                System.out.printf("Confirmation: %s%n", message);
+                channel.basicAck(envelope.getDeliveryTag(), false);
+            }
+        };
+        channel.basicConsume(crewName, false, consumer);
 
         while (true) {
             System.out.println("Type equipment you need: ");
@@ -36,8 +46,11 @@ public class Crew {
                 break;
             }
 
-            channel.basicPublish(EXCHANGE_NAME, eq, null, msg.getBytes(StandardCharsets.UTF_8));
+            channel.basicPublish(EXCHANGE_EXP, eq, null, msg.getBytes(StandardCharsets.UTF_8));
             System.out.println("Sent: " + msg);
         }
+
+        channel.close();
+        connection.close();
     }
 }

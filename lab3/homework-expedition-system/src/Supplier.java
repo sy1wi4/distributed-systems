@@ -23,14 +23,16 @@ public class Supplier {
         Channel channel = connection.createChannel();
         channel.basicQos(1);
 
-        String EXCHANGE_NAME = "exchange_exp";
-        channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
+        String EXCHANGE_EXP = "exchange_exp";
+        channel.exchangeDeclare(EXCHANGE_EXP, BuiltinExchangeType.DIRECT);
+
+        String EXCHANGE_CONF = "exchange_conf";
+        channel.exchangeDeclare(EXCHANGE_CONF, BuiltinExchangeType.DIRECT);
 
         for (String eq : equipments) {
             String queueName = channel.queueDeclare(eq, false, false, false, null).getQueue();
-            channel.queueBind(queueName, EXCHANGE_NAME, eq);
+            channel.queueBind(queueName, EXCHANGE_EXP, eq);
             System.out.println("created queue: " + eq);
-
         }
 
         Consumer consumer = new DefaultConsumer(channel) {
@@ -38,7 +40,11 @@ public class Supplier {
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 String message = new String(body, StandardCharsets.UTF_8);
                 String[] split = message.split(":");
-                System.out.printf("Received [%s] from [%s]%n", split[0], split[1]);
+                String eq = split[0];
+                String senderCrew = split[1];
+                System.out.printf("Received [%s] order from [%s]%n", eq, senderCrew);
+                String reply = "[" + eq + "] order delivered";
+                channel.basicPublish(EXCHANGE_CONF, senderCrew, null, reply.getBytes(StandardCharsets.UTF_8));
                 channel.basicAck(envelope.getDeliveryTag(), false);
             }
         };
