@@ -1,13 +1,11 @@
 import org.apache.zookeeper.*;
 
-import java.awt.*;
-import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.*;
 
 public class App implements Watcher {
     private final ZooKeeper zooKeeper;
+    private Process process;
 
     public App() throws IOException {
         this.zooKeeper = new ZooKeeper("localhost:2182", 3000, this);
@@ -27,12 +25,6 @@ public class App implements Watcher {
 
     @Override
     public void process(WatchedEvent event) {
-//        try {
-//            printTree("/z");
-//        } catch (IOException | InterruptedException | KeeperException e) {
-//            e.printStackTrace();
-//        }
-
         if (event.getType() == Event.EventType.NodeCreated) {
             System.out.println("zNode created, path: " + event.getPath());
             try {
@@ -44,14 +36,17 @@ public class App implements Watcher {
 
             if (Objects.equals(event.getPath(), "/z")) {
                 System.out.println("Opening app...");
-
+                String appLocation = "/System/Applications/Notes.app";
                 try {
-                    Desktop.getDesktop().open(new File("/Applications/Microsoft OneNote.app"));
+//                    Process process = Runtime.getRuntime().exec("chmod -R 777 " + appLocation);
+                    process = Runtime.getRuntime().exec("open " + appLocation);
+                    System.out.println("app: " + process);
+
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
-
                 try {
                     System.out.println("zNode /z number of children: " + zooKeeper.getAllChildrenNumber("/z"));
                 } catch (KeeperException | InterruptedException e) {
@@ -60,6 +55,10 @@ public class App implements Watcher {
             }
         } else if (event.getType() == Event.EventType.NodeDeleted) {
             System.out.println("zNode deleted, path: " + event.getPath());
+            if (Objects.equals(event.getPath(), "/z")) {
+                System.out.println("Killing app");
+                process.destroy();
+            }
         }
 
     }
